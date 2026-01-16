@@ -1,68 +1,76 @@
 package in.p.main.controller;
-
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import in.p.main.Dto.OrderRequest;
-import in.p.main.entities.OrderHeader;
-import in.p.main.services.OrderService;
+import in.p.main.dto.OrderItemDTO;
+import in.p.main.dto.OrderRequestDTO;
+import in.p.main.dto.OrderResponseDTO;
+import in.p.main.service.OrderService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService service;
 
-    // Create a new order
-    @PostMapping
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequest request) {
-        try {
-            OrderHeader order = orderService.createOrder(request);
-            return new ResponseEntity<>(order, HttpStatus.CREATED);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", ex.getMessage()));
-        }
+    public OrderController(OrderService service) {
+		super();
+		this.service = service;
+	}
+
+	@PostMapping
+    public ResponseEntity<OrderResponseDTO> createOrder(
+            @RequestBody OrderRequestDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.createOrder(dto));
     }
 
-    // Get all orders
-    @GetMapping
-    public ResponseEntity<?> getAllOrders() {
-        try {
-            List<OrderHeader> orders = orderService.getAllOrders();
-            return ResponseEntity.ok(orders);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", ex.getMessage()));
-        }
-    }
-
-    // Get single order by ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOrder(@PathVariable int id) {
-        try {
-            OrderHeader order = orderService.getOrderById(id);
-            return ResponseEntity.ok(order);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", ex.getMessage()));
-        }
+    public ResponseEntity<OrderResponseDTO> getOrder(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getOrder(id));
     }
 
-    // Delete an order
+    @GetMapping
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrders() {
+        return ResponseEntity.ok(service.getAllOrders());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderResponseDTO> updateOrder(
+            @PathVariable Long id,
+            @RequestBody OrderRequestDTO dto) {
+        return ResponseEntity.ok(service.updateOrder(id, dto));
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable int id) {
-        try {
-            orderService.deleteOrder(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", ex.getMessage()));
-        }
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        service.deleteOrder(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{orderId}/items")
+    public ResponseEntity<OrderItemDTO> addItem(
+            @PathVariable Long orderId,
+            @RequestBody OrderItemDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.addItem(orderId, dto));
+    }
+
+    @GetMapping("/{orderId}/items")
+    public ResponseEntity<List<OrderItemDTO>> getItems(
+            @PathVariable Long orderId) {
+        return ResponseEntity.ok(service.getItems(orderId));
     }
 }

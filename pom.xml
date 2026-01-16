@@ -48,11 +48,14 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-        	<groupId>in.programming</groupId>
-        	<artifactId>FliprAssignment</artifactId>
-        	<version>1.0</version>
-        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+   
+    <scope>compile</scope>
+</dependency>
+        
     </dependencies>
 
     <build>

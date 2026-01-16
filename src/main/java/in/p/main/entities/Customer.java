@@ -11,7 +11,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private int customerId;
+    private Long customerId;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -19,11 +19,11 @@ public class Customer {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    public int getCustomerId() {
+    public Long getCustomerId() {
         return customerId;
     }
     public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+        this.customerId = (long) customerId;
     }
     public String getFirstName() {
         return firstName;
@@ -37,4 +37,8 @@ public class Customer {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+	public Long getContactMechId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

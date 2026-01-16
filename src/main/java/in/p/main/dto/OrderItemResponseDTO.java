@@ -1,67 +1,33 @@
-package in.p.main.entities;
+package in.p.main.dto;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
-@Entity
-@Table(name = "order_item")
-@Getter
-@Setter
-public class OrderItem {
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_item_id")
-    private Long orderItemId;
-
+public class OrderItemResponseDTO {
+	private Long orderItemId;
     private String productName;
     private Integer quantity;
     private Double unitPrice;
-
-    @ManyToOne
-    @JoinColumn(name = "order_id") // FK to OrderHeader
-    private OrderHeader order;
-
 	public Long getOrderItemId() {
 		return orderItemId;
 	}
-
 	public void setOrderItemId(Long orderItemId) {
 		this.orderItemId = orderItemId;
 	}
-
 	public String getProductName() {
 		return productName;
 	}
-
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-
 	public Integer getQuantity() {
 		return quantity;
 	}
-
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-
 	public Double getUnitPrice() {
 		return unitPrice;
 	}
-
 	public void setUnitPrice(Double unitPrice) {
 		this.unitPrice = unitPrice;
 	}
 
-	public OrderHeader getOrder() {
-		return order;
-	}
-
-	public void setOrder(OrderHeader order) {
-		this.order = order;
-	}
-
-	
 }
